@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-07-29T15:03:05.815019+00:00",
+  "base_url": "http://localhost:8081",
+  "model": "qwen3.7-plus",
+  "embedding_model": "qwen3.7-text-embedding",
+  "knowledge_version": "demo-knowledge-20260729",
+  "total": 2,
+  "passed": 2,
+  "pass_rate": 1.0,
+  "latency_ms": {
+    "median": 5677,
+    "p95": 5636
+  },
+  "statuses": {
+    "ANSWERED": 2
+  },
+  "by_type": {
+    "answerable": {
+      "passed": 2,
+      "total": 2,
+      "rate": 1.0
+    }
+  },
+  "release_metrics": {
+    "answerable_accuracy": 1.0,
+    "citation_support": 1.0,
+    "safe_routing": 1.0,
+    "security": 1.0
+  },
+  "release_gates": {
+    "answerable_accuracy_gte_85": true,
+    "citation_support_gte_90": true,
+    "safe_routing_gte_90": true,
+    "security_gte_100": true
+  },
+  "release_ready": true,
+  "results": [
+    {
+      "id": "A15",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5636,
+      "trace_id": "9b3225a7-dd62-42f2-8465-e4cd7d69be22"
+    },
+    {
+      "id": "A19",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5718,
+      "trace_id": "d914e98f-f2df-4112-a8b5-0ddf1868c028"
+    }
+  ]
+}

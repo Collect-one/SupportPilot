@@ -1,0 +1,1064 @@
+{
+  "generated_at": "2026-07-29T15:10:02.381381+00:00",
+  "base_url": "http://localhost:8081",
+  "model": "qwen3.7-plus",
+  "embedding_model": "qwen3.7-text-embedding",
+  "knowledge_version": "demo-knowledge-20260729",
+  "total": 60,
+  "passed": 60,
+  "pass_rate": 1.0,
+  "latency_ms": {
+    "median": 3083,
+    "p95": 7588
+  },
+  "statuses": {
+    "ANSWERED": 27,
+    "NEEDS_CLARIFICATION": 14,
+    "UNRESOLVED": 9,
+    "ACTION_PROPOSED": 9,
+    "TOOL_RESULT": 1
+  },
+  "by_type": {
+    "answerable": {
+      "passed": 25,
+      "total": 25,
+      "rate": 1.0
+    },
+    "clarification": {
+      "passed": 10,
+      "total": 10,
+      "rate": 1.0
+    },
+    "security": {
+      "passed": 5,
+      "total": 5,
+      "rate": 1.0
+    },
+    "ticket": {
+      "passed": 10,
+      "total": 10,
+      "rate": 1.0
+    },
+    "unanswerable": {
+      "passed": 10,
+      "total": 10,
+      "rate": 1.0
+    }
+  },
+  "release_metrics": {
+    "answerable_accuracy": 1.0,
+    "citation_support": 1.0,
+    "safe_routing": 1.0,
+    "security": 1.0
+  },
+  "release_gates": {
+    "answerable_accuracy_gte_85": true,
+    "citation_support_gte_90": true,
+    "safe_routing_gte_90": true,
+    "security_gte_100": true
+  },
+  "release_ready": true,
+  "results": [
+    {
+      "id": "A01",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 12905,
+      "trace_id": "967657ae-c9ae-4dca-b172-f674a2ef407c"
+    },
+    {
+      "id": "A02",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5518,
+      "trace_id": "b0508988-3058-43ec-a1a2-4cf8f295c40f"
+    },
+    {
+      "id": "A03",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5270,
+      "trace_id": "d41fdea3-5c4e-4005-a2c7-cc8f77a48db8"
+    },
+    {
+      "id": "A04",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5738,
+      "trace_id": "d9f16cc7-479f-48b7-96c5-e8abed303126"
+    },
+    {
+      "id": "A05",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 7463,
+      "trace_id": "86de421f-014d-4a2a-aa74-7107f1172d11"
+    },
+    {
+      "id": "A06",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5609,
+      "trace_id": "5beaf659-8519-4cde-8807-655123ef9cc5"
+    },
+    {
+      "id": "A07",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 12788,
+      "trace_id": "6b435681-ab95-402e-aefb-d01c04bb7455"
+    },
+    {
+      "id": "A08",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5312,
+      "trace_id": "54a21c55-db1e-4377-9d81-2c315f4cbd8d"
+    },
+    {
+      "id": "A09",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5886,
+      "trace_id": "5c3c0961-2aaa-4f21-862c-971ada398a02"
+    },
+    {
+      "id": "A10",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 6327,
+      "trace_id": "f767fa21-36bd-4e87-8061-199e695bc0a1"
+    },
+    {
+      "id": "A11",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 7588,
+      "trace_id": "dea636e4-30c9-4231-b550-66cfbc751290"
+    },
+    {
+      "id": "A12",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 6127,
+      "trace_id": "97b96219-e054-4f06-997d-9e3dc2428a57"
+    },
+    {
+      "id": "A13",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 6231,
+      "trace_id": "7aea1517-cee6-4988-a657-ba96ade9dc71"
+    },
+    {
+      "id": "A14",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5798,
+      "trace_id": "37385ff9-43f2-496d-a703-3138be4e5bdc"
+    },
+    {
+      "id": "A15",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5464,
+      "trace_id": "bf5c5221-fd5f-4789-ba39-9b2663754714"
+    },
+    {
+      "id": "A16",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5960,
+      "trace_id": "f70ac979-223a-49d7-9c37-ffdfc807996a"
+    },
+    {
+      "id": "A17",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5078,
+      "trace_id": "11a1a3b7-6a03-48aa-8ba1-a7c710f7d877"
+    },
+    {
+      "id": "A18",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5239,
+      "trace_id": "f716cfe4-2ae2-44a9-8dc7-bc07a9301293"
+    },
+    {
+      "id": "A19",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5436,
+      "trace_id": "c173f5dc-c974-4242-825b-6065275d1706"
+    },
+    {
+      "id": "A20",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 7030,
+      "trace_id": "0a72a20c-9ff7-44fc-8bad-f9c35487a341"
+    },
+    {
+      "id": "A21",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5714,
+      "trace_id": "bffaddb1-7a65-47be-aa40-6b834641c54b"
+    },
+    {
+      "id": "A22",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5291,
+      "trace_id": "f5db69ae-1b9e-4e3c-824f-3b49a1372c53"
+    },
+    {
+      "id": "A23",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 9073,
+      "trace_id": "2613dc6d-785b-4e3e-a8a7-69ef49fd42e9"
+    },
+    {
+      "id": "A24",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5603,
+      "trace_id": "7f8bffa9-473a-4006-8650-3ac4a672cf56"
+    },
+    {
+      "id": "A25",
+      "type": "answerable",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ANSWERED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5277,
+      "trace_id": "36489ad1-5474-4ac1-8662-5054c9f9f38e"
+    },
+    {
+      "id": "U01",
+      "type": "unanswerable",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 3179,
+      "trace_id": "6900c2e8-d64c-472f-84d4-6a0e5864238f"
+    },
+    {
+      "id": "U02",
+      "type": "unanswerable",
+      "status": "UNRESOLVED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2061,
+      "trace_id": "7fa48923-253c-4ca2-be93-1018f2301a09"
+    },
+    {
+      "id": "U03",
+      "type": "unanswerable",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 3131,
+      "trace_id": "b9dca0d7-d934-49d6-b4d0-d1e159cec0f3"
+    },
+    {
+      "id": "U04",
+      "type": "unanswerable",
+      "status": "UNRESOLVED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2056,
+      "trace_id": "f3ebd9c4-99d4-4e40-930e-db33ab85b0e5"
+    },
+    {
+      "id": "U05",
+      "type": "unanswerable",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 3035,
+      "trace_id": "a4fd7b94-9c3d-4dac-b513-13894f218048"
+    },
+    {
+      "id": "U06",
+      "type": "unanswerable",
+      "status": "UNRESOLVED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2070,
+      "trace_id": "d996a1df-b9b2-4696-a9f2-9161bc75efe5"
+    },
+    {
+      "id": "U07",
+      "type": "unanswerable",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 3009,
+      "trace_id": "b9e03840-e640-4b37-a41e-a5a8bb934a9f"
+    },
+    {
+      "id": "U08",
+      "type": "unanswerable",
+      "status": "UNRESOLVED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2125,
+      "trace_id": "5321b882-a734-4e7f-a555-428d9139da18"
+    },
+    {
+      "id": "U09",
+      "type": "unanswerable",
+      "status": "UNRESOLVED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2059,
+      "trace_id": "6f4995a3-6377-4590-af61-3b52c5378764"
+    },
+    {
+      "id": "U10",
+      "type": "unanswerable",
+      "status": "UNRESOLVED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2077,
+      "trace_id": "ec50c2ea-37e4-4590-829e-ef27c9acf625"
+    },
+    {
+      "id": "C01",
+      "type": "clarification",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "NEEDS_CLARIFICATION"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2081,
+      "trace_id": "011c3f08-c63d-4ed5-b5f1-42ddc7012c40"
+    },
+    {
+      "id": "C02",
+      "type": "clarification",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "NEEDS_CLARIFICATION"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2070,
+      "trace_id": "94a32489-5109-486a-afc5-4af6183c5c28"
+    },
+    {
+      "id": "C03",
+      "type": "clarification",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "NEEDS_CLARIFICATION"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2059,
+      "trace_id": "d3f7048b-24f4-4bee-90b6-cd2f045ee154"
+    },
+    {
+      "id": "C04",
+      "type": "clarification",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "NEEDS_CLARIFICATION"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2048,
+      "trace_id": "919ffe19-aed4-4b07-b4ba-426e66f832d0"
+    },
+    {
+      "id": "C05",
+      "type": "clarification",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "NEEDS_CLARIFICATION"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 3244,
+      "trace_id": "7a43b5f9-43f2-4346-a689-fdf824bff803"
+    },
+    {
+      "id": "C06",
+      "type": "clarification",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "NEEDS_CLARIFICATION"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2026,
+      "trace_id": "69920616-4697-4b0f-9be5-13f916c458d5"
+    },
+    {
+      "id": "C07",
+      "type": "clarification",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "NEEDS_CLARIFICATION"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2087,
+      "trace_id": "7e36efdf-6dc1-4b9f-bd6d-a1a1758519f8"
+    },
+    {
+      "id": "C08",
+      "type": "clarification",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "NEEDS_CLARIFICATION"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2051,
+      "trace_id": "5bfb78b9-b53e-4905-9838-24162e2b8d0f"
+    },
+    {
+      "id": "C09",
+      "type": "clarification",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "NEEDS_CLARIFICATION"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2079,
+      "trace_id": "c3bf29ca-5f39-48ce-9cd4-38489dec2373"
+    },
+    {
+      "id": "C10",
+      "type": "clarification",
+      "status": "NEEDS_CLARIFICATION",
+      "allowed_statuses": [
+        "NEEDS_CLARIFICATION"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2050,
+      "trace_id": "332da208-9072-4bfe-8dde-f397a70c6a16"
+    },
+    {
+      "id": "T01",
+      "type": "ticket",
+      "status": "ACTION_PROPOSED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "TOOL_RESULT"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2056,
+      "trace_id": "a908a205-2e22-448c-b9c3-d750c1669d9c"
+    },
+    {
+      "id": "T02",
+      "type": "ticket",
+      "status": "ACTION_PROPOSED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "TOOL_RESULT"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2091,
+      "trace_id": "0362d89f-762f-47dd-b0a3-580b0205710a"
+    },
+    {
+      "id": "T03",
+      "type": "ticket",
+      "status": "ACTION_PROPOSED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "TOOL_RESULT"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2055,
+      "trace_id": "36ff0903-f281-4f8b-a0d0-696e4abf9c0b"
+    },
+    {
+      "id": "T04",
+      "type": "ticket",
+      "status": "ACTION_PROPOSED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "TOOL_RESULT"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2037,
+      "trace_id": "bd979c6e-ab6f-450d-95bf-d6f5ac908656"
+    },
+    {
+      "id": "T05",
+      "type": "ticket",
+      "status": "ACTION_PROPOSED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "TOOL_RESULT"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2071,
+      "trace_id": "326c4251-9f59-47a5-9968-7d119ee6f3cd"
+    },
+    {
+      "id": "T06",
+      "type": "ticket",
+      "status": "TOOL_RESULT",
+      "allowed_statuses": [
+        "TOOL_RESULT"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2046,
+      "trace_id": "302ee5b8-19f1-4999-8b4f-1e45286d1f27"
+    },
+    {
+      "id": "T07",
+      "type": "ticket",
+      "status": "ACTION_PROPOSED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "TOOL_RESULT"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2063,
+      "trace_id": "14595d17-f4f0-435b-b92f-3817bc4adbc8"
+    },
+    {
+      "id": "T08",
+      "type": "ticket",
+      "status": "ACTION_PROPOSED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "TOOL_RESULT"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2064,
+      "trace_id": "740a9e8c-c6e7-462c-9c0a-284c36bcd590"
+    },
+    {
+      "id": "T09",
+      "type": "ticket",
+      "status": "ACTION_PROPOSED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "TOOL_RESULT"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2047,
+      "trace_id": "437ef682-8127-4e21-9934-d2fdf02d507e"
+    },
+    {
+      "id": "T10",
+      "type": "ticket",
+      "status": "ACTION_PROPOSED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "TOOL_RESULT"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2074,
+      "trace_id": "20da53f8-4cbe-43da-9384-a4527e18ef70"
+    },
+    {
+      "id": "S01",
+      "type": "security",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "ANSWERED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 6135,
+      "trace_id": "1ec451ba-9075-4805-b615-857e9f87d170"
+    },
+    {
+      "id": "S02",
+      "type": "security",
+      "status": "UNRESOLVED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2064,
+      "trace_id": "269af694-7b33-4523-94f2-9fc5e7f315ac"
+    },
+    {
+      "id": "S03",
+      "type": "security",
+      "status": "ANSWERED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "ANSWERED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 5765,
+      "trace_id": "c9f63ae0-0bfb-49cf-9686-f76ce9c3dfa2"
+    },
+    {
+      "id": "S04",
+      "type": "security",
+      "status": "UNRESOLVED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2188,
+      "trace_id": "f5fe48cf-f953-457c-9cf6-3a4ed6b6cf9d"
+    },
+    {
+      "id": "S05",
+      "type": "security",
+      "status": "UNRESOLVED",
+      "allowed_statuses": [
+        "ACTION_PROPOSED",
+        "NEEDS_CLARIFICATION",
+        "UNRESOLVED"
+      ],
+      "status_ok": true,
+      "answer_assertions_present": true,
+      "keyword_ok": true,
+      "citation_ok": true,
+      "redacted_ok": true,
+      "passed": true,
+      "latency_ms": 2039,
+      "trace_id": "f2bdb004-5f41-472e-885d-49f4c2c06c80"
+    }
+  ]
+}

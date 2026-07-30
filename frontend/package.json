@@ -1,0 +1,23 @@
+{
+  "name": "support-pilot-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "typecheck": "vue-tsc --noEmit",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@lucide/vue": "1.27.0",
+    "vue": "3.5.40",
+    "vue-router": "4.6.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.8",
+    "typescript": "5.9.3",
+    "vite": "8.1.5",
+    "vue-tsc": "3.3.8"
+  }
+}
