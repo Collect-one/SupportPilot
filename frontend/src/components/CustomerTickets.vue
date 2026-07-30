@@ -15,6 +15,8 @@ const error = ref('')
 const showCreate = ref(false)
 const comment = ref('')
 const submitting = ref(false)
+const pendingAction = ref('')
+const actionError = ref('')
 const idempotencyKey = ref(crypto.randomUUID())
 const form = ref({ title: '', description: '', product_module: '其他', category: 'OTHER', priority: 'NORMAL', workspace_id: '', environment: '', error_code: '', reproduction_steps: '', business_impact: '' })
 
@@ -61,18 +63,34 @@ async function createTicket() {
 
 async function addComment() {
   if (!active.value || !comment.value.trim()) return
-  active.value = await api<Ticket>(`/tickets/${active.value.id}/comments`, {
-    method: 'POST',
-    body: JSON.stringify({ content: comment.value }),
-  })
-  comment.value = ''
-  await load()
+  pendingAction.value = 'COMMENT'
+  actionError.value = ''
+  try {
+    active.value = await api<Ticket>(`/tickets/${active.value.id}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ content: comment.value }),
+    })
+    comment.value = ''
+    await load()
+  } catch (cause) {
+    actionError.value = cause instanceof Error ? cause.message : '回复发送失败，请重试'
+  } finally {
+    pendingAction.value = ''
+  }
 }
 
 async function changeStatus(status: string) {
   if (!active.value) return
-  active.value = await api<Ticket>(`/tickets/${active.value.id}`, { method: 'PATCH', body: JSON.stringify({ status }) })
-  await load()
+  pendingAction.value = status
+  actionError.value = ''
+  try {
+    active.value = await api<Ticket>(`/tickets/${active.value.id}`, { method: 'PATCH', body: JSON.stringify({ status }) })
+    await load()
+  } catch (cause) {
+    actionError.value = cause instanceof Error ? cause.message : '工单状态更新失败，请重试'
+  } finally {
+    pendingAction.value = ''
+  }
 }
 
 function statusLabel(status: string) {
@@ -120,8 +138,9 @@ watch(
         <section class="ticket-description"><h3>问题描述</h3><p>{{ active.description }}</p><dl v-if="active.workspace_id || active.error_code"><template v-if="active.workspace_id"><dt>工作空间</dt><dd>{{ active.workspace_id }}</dd></template><template v-if="active.error_code"><dt>错误码</dt><dd>{{ active.error_code }}</dd></template></dl></section>
         <section class="event-timeline"><h3>处理记录</h3><article v-for="event in active.events" :key="event.id"><span class="timeline-dot"></span><div><header><strong>{{ event.author_name || '系统' }}</strong><time>{{ formatDate(event.created_at) }}</time></header><p>{{ event.content }}</p></div></article></section>
         <footer class="ticket-reply">
-          <div class="ticket-actions"><button v-if="active.status === 'RESOLVED'" class="secondary-button" @click="changeStatus('OPEN')"><RotateCcw :size="16" />重新打开</button><button v-if="active.status === 'RESOLVED'" class="primary-button" @click="changeStatus('CLOSED')"><CheckCircle2 :size="16" />确认关闭</button><button v-if="active.status === 'CLOSED'" class="secondary-button" @click="changeStatus('OPEN')"><RotateCcw :size="16" />重新打开</button></div>
-          <div class="reply-composer"><textarea v-model="comment" rows="2" placeholder="补充信息或回复人工支持"></textarea><button title="发送回复" :disabled="!comment.trim()" @click="addComment"><Send :size="17" /></button></div>
+          <p v-if="actionError" class="form-error action-error">{{ actionError }}</p>
+          <div class="ticket-actions"><button v-if="active.status === 'RESOLVED'" class="secondary-button" :disabled="!!pendingAction" @click="changeStatus('OPEN')"><LoaderCircle v-if="pendingAction === 'OPEN'" class="spin" :size="16" /><RotateCcw v-else :size="16" />重新打开</button><button v-if="active.status === 'RESOLVED'" class="primary-button" :disabled="!!pendingAction" @click="changeStatus('CLOSED')"><LoaderCircle v-if="pendingAction === 'CLOSED'" class="spin" :size="16" /><CheckCircle2 v-else :size="16" />确认关闭</button><button v-if="active.status === 'CLOSED'" class="secondary-button" :disabled="!!pendingAction" @click="changeStatus('OPEN')"><LoaderCircle v-if="pendingAction === 'OPEN'" class="spin" :size="16" /><RotateCcw v-else :size="16" />重新打开</button></div>
+          <div class="reply-composer"><textarea v-model="comment" rows="2" placeholder="补充信息或回复人工支持" :disabled="!!pendingAction"></textarea><button title="发送回复" :disabled="!comment.trim() || !!pendingAction" @click="addComment"><LoaderCircle v-if="pendingAction === 'COMMENT'" class="spin" :size="17" /><Send v-else :size="17" /></button></div>
         </footer>
       </article>
     </section>

@@ -54,7 +54,14 @@ def seed_demo(db: Session) -> None:
     for path in sorted(source_dir.glob("*.md")):
         content = path.read_bytes()
         digest = hashlib.sha256(content).hexdigest()
-        if db.scalar(sa.select(Document).where(Document.sha256 == digest)):
+        if db.scalar(
+            sa.select(Document).where(
+                sa.or_(
+                    Document.sha256 == digest,
+                    sa.and_(Document.logical_name == path.stem, Document.version == 1),
+                )
+            )
+        ):
             continue
         document = Document(
             logical_name=path.stem,

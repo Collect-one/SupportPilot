@@ -54,9 +54,12 @@ def citation_dict(citation) -> dict:
 
 
 def message_dict(
-    message: Message, proposal: ActionProposal | None = None, db: Session | None = None
+    message: Message,
+    proposal: ActionProposal | None = None,
+    db: Session | None = None,
+    include_citations: bool = True,
 ) -> dict:
-    return {
+    result = {
         "id": message.id,
         "role": message.role,
         "status": message.status,
@@ -64,9 +67,11 @@ def message_dict(
         "trace_id": message.trace_id,
         "latency_ms": message.latency_ms,
         "created_at": message.created_at,
-        "citations": [citation_dict(citation) for citation in message.citations],
         "action_proposal": proposal_dict(proposal, db),
     }
+    if include_citations:
+        result["citations"] = [citation_dict(citation) for citation in message.citations]
+    return result
 
 
 def ticket_dict(
@@ -75,8 +80,8 @@ def ticket_dict(
     include_events: bool = False,
     include_handoff: bool = False,
 ) -> dict:
-    customer = db.get(User, ticket.customer_id)
-    assignee = db.get(User, ticket.assignee_id) if ticket.assignee_id else None
+    customer = ticket.customer
+    assignee = ticket.assignee
     organization = customer.organization if customer else None
     result = {
         "id": ticket.id,

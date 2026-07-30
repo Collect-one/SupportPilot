@@ -8,6 +8,7 @@ import {
   Menu,
   PanelLeftClose,
   ScrollText,
+  Search,
   ShieldCheck,
   X,
 } from '@lucide/vue'
@@ -40,6 +41,7 @@ function navigate(view: string) {
           <button :class="{ active: view === 'support-tickets' }" @click="navigate('support-tickets')"><ClipboardList :size="18" />工单队列</button>
           <button :class="{ active: view === 'knowledge' }" @click="navigate('knowledge')"><BookOpenText :size="18" />知识库</button>
           <button :class="{ active: view === 'operations' }" @click="navigate('operations')"><ScrollText :size="18" />运行记录</button>
+          <button :class="{ active: view === 'rag-audit' }" @click="navigate('rag-audit')"><Search :size="18" />RAG 验收</button>
         </template>
       </nav>
       <div class="sidebar-user">

@@ -201,6 +201,8 @@ class Ticket(Base, TimestampMixin):
     events: Mapped[list["TicketEvent"]] = relationship(
         back_populates="ticket", cascade="all, delete-orphan", order_by="TicketEvent.created_at"
     )
+    customer: Mapped[User] = relationship(foreign_keys=[customer_id])
+    assignee: Mapped[User | None] = relationship(foreign_keys=[assignee_id])
 
 
 class TicketSequence(Base):
@@ -246,6 +248,7 @@ class ToolRun(Base):
     conversation_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("conversations.id"), nullable=True, index=True
     )
+    trace_id: Mapped[uuid.UUID | None] = mapped_column(sa.Uuid, nullable=True, index=True)
     tool_name: Mapped[str] = mapped_column(String(80), index=True)
     input_json: Mapped[dict] = mapped_column(sa.JSON)
     output_json: Mapped[dict] = mapped_column(sa.JSON)

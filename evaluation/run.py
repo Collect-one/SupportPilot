@@ -58,6 +58,13 @@ def run(base_url: str, output_dir: Path, only_ids: set[str] | None = None) -> di
         data={"email": "alice@nova.test", "password": "customer123"},
     )
     token = login["access_token"]
+    _, support_login = call(
+        base_url,
+        "/api/v1/auth/login",
+        "POST",
+        data={"email": "support@flowpilot.test", "password": "support123"},
+    )
+    support_token = support_login["access_token"]
     cases = [
         json.loads(line)
         for line in (ROOT / "cases.jsonl").read_text(encoding="utf-8").splitlines()
@@ -84,7 +91,14 @@ def run(base_url: str, output_dir: Path, only_ids: set[str] | None = None) -> di
         )
         latency_ms = round((time.perf_counter() - started) * 1000)
         answer = response.get("answer", "")
-        citations = response.get("citations", [])
+        trace = {}
+        if response.get("trace_id"):
+            _, trace = call(
+                base_url,
+                f"/api/v1/support/rag-traces/{response['trace_id']}",
+                token=support_token,
+            )
+        citations = trace.get("citations", [])
         allowed = expected_statuses(case)
         status_ok = status_code == 200 and response.get("status") in allowed
         answer_groups = case.get("answer_keyword_groups", [])

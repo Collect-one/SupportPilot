@@ -1,11 +1,13 @@
 import os
 from pathlib import Path
 
-os.environ.setdefault("DATABASE_URL", "sqlite:///./test_support_pilot.db")
-os.environ.setdefault("AUTO_CREATE_TABLES", "true")
-os.environ.setdefault("SEED_DEMO", "true")
-os.environ.setdefault("DEMO_KNOWLEDGE_DIR", "../docs/demo-knowledge")
-os.environ.setdefault("UPLOAD_DIR", "./test_uploads")
+os.environ["DATABASE_URL"] = os.environ.get(
+    "TEST_DATABASE_URL", "sqlite:///./test_support_pilot.db"
+)
+os.environ["AUTO_CREATE_TABLES"] = "true"
+os.environ["SEED_DEMO"] = "true"
+os.environ["DEMO_KNOWLEDGE_DIR"] = "../docs/demo-knowledge"
+os.environ["UPLOAD_DIR"] = "./test_uploads"
 
 import pytest
 from fastapi.testclient import TestClient

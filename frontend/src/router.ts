@@ -8,6 +8,7 @@ const routes = [
   { path: '/support/tickets/:ticketId?', name: 'support-tickets', component: { template: '<span />' }, meta: { role: 'SUPPORT' } },
   { path: '/support/knowledge', name: 'knowledge', component: { template: '<span />' }, meta: { role: 'SUPPORT' } },
   { path: '/support/operations', name: 'operations', component: { template: '<span />' }, meta: { role: 'SUPPORT' } },
+  { path: '/support/rag-audit', name: 'rag-audit', component: { template: '<span />' }, meta: { role: 'SUPPORT' } },
   { path: '/:pathMatch(.*)*', redirect: () => getStoredUser()?.role === 'SUPPORT' ? '/support/tickets' : '/chat' },
 ]
 

@@ -7,7 +7,6 @@ import {
   Check,
   ChevronRight,
   ClipboardCheck,
-  FileText,
   LoaderCircle,
   Menu,
   MessageSquarePlus,
@@ -15,10 +14,9 @@ import {
   Sparkles,
   ThumbsDown,
   ThumbsUp,
-  X,
 } from '@lucide/vue'
 import { api } from '../api'
-import type { ActionProposal, Citation, Conversation, Message, Ticket } from '../types'
+import type { ActionProposal, Conversation, Message, Ticket } from '../types'
 
 const emit = defineEmits<{ 'open-tickets': [ticketId?: string] }>()
 const route = useRoute()
@@ -28,12 +26,13 @@ const active = ref<Conversation | null>(null)
 const input = ref('')
 const sending = ref(false)
 const error = ref('')
-const selectedCitation = ref<Citation | null>(null)
 const confirming = ref(false)
 const confirmedTickets = ref<Record<string, Ticket>>({})
 const feedbackSent = ref<Record<string, boolean>>({})
 const feedbackReasonFor = ref<string | null>(null)
 const feedbackReason = ref('ANSWER_INCOMPLETE')
+const feedbackSubmitting = ref<Record<string, boolean>>({})
+const feedbackErrors = ref<Record<string, string>>({})
 const conversationDrawerOpen = ref(false)
 const thread = ref<HTMLElement | null>(null)
 
@@ -100,12 +99,26 @@ async function confirmProposal(proposal: ActionProposal) {
 }
 
 async function feedback(message: Message, resolved: boolean, reason: string | null = null) {
-  await api(`/messages/${message.id}/feedback`, {
-    method: 'POST',
-    body: JSON.stringify({ resolved, reason }),
-  })
-  feedbackSent.value[message.id] = true
-  feedbackReasonFor.value = null
+  feedbackSubmitting.value[message.id] = true
+  feedbackErrors.value[message.id] = ''
+  try {
+    await api(`/messages/${message.id}/feedback`, {
+      method: 'POST',
+      body: JSON.stringify({ resolved, reason }),
+    })
+    feedbackSent.value[message.id] = true
+    feedbackReasonFor.value = null
+  } catch (cause) {
+    feedbackErrors.value[message.id] = cause instanceof Error ? cause.message : '反馈提交失败，请重试'
+  } finally {
+    feedbackSubmitting.value[message.id] = false
+  }
+}
+
+function openFeedbackReason(messageId: string) {
+  feedbackReason.value = 'ANSWER_INCOMPLETE'
+  feedbackErrors.value[messageId] = ''
+  feedbackReasonFor.value = messageId
 }
 
 function handleKeydown(event: KeyboardEvent) {
@@ -117,7 +130,6 @@ function handleKeydown(event: KeyboardEvent) {
 
 function statusLabel(status: string | null) {
   return {
-    ANSWERED: '依据知识库回答',
     NEEDS_CLARIFICATION: '需要补充信息',
     ACTION_PROPOSED: '建议转人工',
     UNRESOLVED: '无法可靠确认',
@@ -174,15 +186,14 @@ watch(
     <section class="chat-panel">
       <header class="chat-header">
         <button class="icon-button conversation-menu" title="打开会话列表" @click="conversationDrawerOpen = true"><Menu :size="19" /></button>
-        <div><h2>{{ active?.title || '智能技术支持' }}</h2><p><span class="live-dot"></span>基于已发布官方资料回答</p></div>
-        <span class="model-mode"><Sparkles :size="14" />受控 Agent</span>
+        <div><h2>{{ active?.title || '智能技术支持' }}</h2><p><span class="live-dot"></span>在线技术支持</p></div>
       </header>
 
       <div ref="thread" class="message-thread">
         <div v-if="!active?.messages?.length" class="chat-empty">
           <span class="empty-icon"><Sparkles :size="25" /></span>
           <h2>今天遇到了什么问题？</h2>
-          <p>我会先核对官方资料；如果无法确认，会整理上下文并帮你转交人工。</p>
+          <p>描述你遇到的产品问题；如果无法直接解决，可以转交人工支持。</p>
           <div class="starter-grid">
             <button v-for="starter in starters" :key="starter" @click="send(starter)"><BookOpen :size="16" /><span>{{ starter }}</span><ChevronRight :size="15" /></button>
           </div>
@@ -193,15 +204,10 @@ watch(
           <div class="message-body">
             <div class="message-meta">
               <strong>{{ message.role === 'USER' ? '你' : 'SupportPilot' }}</strong>
-              <span v-if="message.status" :class="['answer-status', message.status.toLowerCase()]">{{ statusLabel(message.status) }}</span>
+              <span v-if="message.status && message.status !== 'ANSWERED'" :class="['answer-status', message.status.toLowerCase()]">{{ statusLabel(message.status) }}</span>
               <time>{{ formatTime(message.created_at) }}</time>
             </div>
             <p class="message-content">{{ message.content }}</p>
-            <div v-if="message.citations.length" class="citation-list">
-              <button v-for="(citation, index) in message.citations" :key="citation.id" @click="selectedCitation = citation">
-                <FileText :size="14" />{{ index + 1 }}. {{ citation.document_name }}<span>v{{ citation.version }}</span>
-              </button>
-            </div>
             <section v-if="message.action_proposal && !message.action_proposal.confirmed_ticket_id && !confirmedTickets[message.action_proposal.id]" class="action-proposal">
               <div class="proposal-heading"><span><ClipboardCheck :size="18" /></span><div><strong>转交人工支持</strong><p>提交前可以检查并修改工单内容</p></div></div>
               <label>标题<input v-model="message.action_proposal.payload.title" /></label>
@@ -213,9 +219,10 @@ watch(
               <span><Check :size="18" /></span><div><strong>工单 {{ message.action_proposal.confirmed_ticket_number || confirmedTickets[message.action_proposal.id]?.number }} 已创建</strong><p>人工支持可以看到本次对话上下文。</p></div><button @click="emit('open-tickets', message.action_proposal.confirmed_ticket_id || confirmedTickets[message.action_proposal.id]?.id)">查看工单</button>
             </section>
             <div v-if="message.status === 'ANSWERED'" class="answer-feedback">
-              <template v-if="!feedbackSent[message.id] && feedbackReasonFor !== message.id"><span>这解决了你的问题吗？</span><button title="已解决" @click="feedback(message, true)"><ThumbsUp :size="15" /></button><button title="未解决" @click="feedbackReasonFor = message.id"><ThumbsDown :size="15" /></button></template>
-              <template v-else-if="!feedbackSent[message.id]"><select v-model="feedbackReason" aria-label="未解决原因"><option value="ANSWER_INCOMPLETE">回答不完整</option><option value="STEPS_DID_NOT_WORK">排查步骤无效</option><option value="CITATION_IRRELEVANT">引用不相关</option><option value="NEED_HUMAN">需要人工处理</option></select><button class="secondary-button" @click="feedback(message, false, feedbackReason)">提交</button></template>
+              <template v-if="!feedbackSent[message.id] && feedbackReasonFor !== message.id"><span>这解决了你的问题吗？</span><button title="已解决" :disabled="feedbackSubmitting[message.id]" @click="feedback(message, true)"><ThumbsUp :size="15" /></button><button title="未解决" :disabled="feedbackSubmitting[message.id]" @click="openFeedbackReason(message.id)"><ThumbsDown :size="15" /></button></template>
+              <template v-else-if="!feedbackSent[message.id]"><select v-model="feedbackReason" aria-label="未解决原因"><option value="ANSWER_INCOMPLETE">回答不完整</option><option value="STEPS_DID_NOT_WORK">排查步骤无效</option><option value="CITATION_IRRELEVANT">回答与问题不相关</option><option value="NEED_HUMAN">需要人工处理</option></select><button class="secondary-button" :disabled="feedbackSubmitting[message.id]" @click="feedback(message, false, feedbackReason)"><LoaderCircle v-if="feedbackSubmitting[message.id]" class="spin" :size="14" />提交</button></template>
               <span v-else class="feedback-confirmed"><Check :size="14" />反馈已记录</span>
+              <span v-if="feedbackErrors[message.id]" class="feedback-error">{{ feedbackErrors[message.id] }}</span>
             </div>
           </div>
         </article>
@@ -228,15 +235,9 @@ watch(
           <textarea v-model="input" rows="1" placeholder="描述问题，请勿发送密码或完整 API Key" :disabled="sending" @keydown="handleKeydown"></textarea>
           <button class="send-button" title="发送消息" :disabled="!input.trim() || sending" @click="send()"><ArrowUp :size="19" /></button>
         </div>
-        <small>回答只依据已发布资料；高风险操作不会由 Agent 自动执行。</small>
+        <small>请勿发送密码、完整 API Key 或其他敏感信息。</small>
       </footer>
     </section>
 
-    <aside v-if="selectedCitation" class="citation-drawer">
-      <header><div><p>官方资料引用</p><h3>{{ selectedCitation.document_name }}</h3></div><button class="icon-button" title="关闭引用" @click="selectedCitation = null"><X :size="18" /></button></header>
-      <div class="citation-meta"><span>版本 {{ selectedCitation.version }}</span><span v-if="selectedCitation.heading">{{ selectedCitation.heading }}</span><span v-if="selectedCitation.page_number">第 {{ selectedCitation.page_number }} 页</span></div>
-      <blockquote>{{ selectedCitation.excerpt }}</blockquote>
-      <p class="citation-score">检索相关度 {{ Math.round(selectedCitation.score * 100) }}%</p>
-    </aside>
   </div>
 </template>

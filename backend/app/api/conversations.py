@@ -2,12 +2,12 @@ import uuid
 
 import sqlalchemy as sa
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session, joinedload, selectinload
+from sqlalchemy.orm import Session, selectinload
 
 from app.api.serializers import message_dict, proposal_dict
 from app.database import get_db
 from app.dependencies import get_current_user, require_customer
-from app.models import ActionProposal, Citation, Conversation, DocumentChunk, Message, User
+from app.models import ActionProposal, Conversation, Message, User
 from app.schemas import (
     AgentResponse,
     ConversationCreate,
@@ -25,12 +25,7 @@ def _get_conversation(db: Session, conversation_id: uuid.UUID, user: User) -> Co
     statement = (
         sa.select(Conversation)
         .where(Conversation.id == conversation_id)
-        .options(
-            selectinload(Conversation.messages)
-            .selectinload(Message.citations)
-            .joinedload(Citation.chunk)
-            .joinedload(DocumentChunk.document)
-        )
+        .options(selectinload(Conversation.messages))
     )
     conversation = db.scalar(statement)
     if not conversation:
@@ -87,7 +82,7 @@ def get_conversation(
     messages = []
     for message in conversation.messages:
         proposal = proposals.get(message.id) if message.status == "ACTION_PROPOSED" else None
-        messages.append(message_dict(message, proposal, db))
+        messages.append(message_dict(message, proposal, db, include_citations=False))
     return {
         "id": conversation.id,
         "title": conversation.title,
@@ -106,23 +101,17 @@ def send_message(
 ):
     conversation = _get_conversation(db, conversation_id, user)
     assistant, proposal, tools = process_customer_message(db, conversation, user, payload.content)
+    for tool in tools:
+        tool.trace_id = assistant.trace_id
     db.commit()
     db.refresh(assistant)
-    for citation in assistant.citations:
-        _ = citation.chunk.document
-    result = message_dict(assistant, proposal, db)
     return {
         "status": assistant.status,
         "answer": assistant.content,
-        "citations": result["citations"],
         "clarification_question": assistant.content
         if assistant.status == "NEEDS_CLARIFICATION"
         else None,
         "action_proposal": proposal_dict(proposal, db),
-        "tool_runs": [
-            {"tool_name": tool.tool_name, "status": tool.status, "duration_ms": tool.duration_ms}
-            for tool in tools
-        ],
         "trace_id": assistant.trace_id,
         "latency_ms": assistant.latency_ms or 0,
         "message_id": assistant.id,

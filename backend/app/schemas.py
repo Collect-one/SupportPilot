@@ -66,7 +66,6 @@ class MessageOut(BaseModel):
     trace_id: uuid.UUID
     latency_ms: int | None
     created_at: datetime
-    citations: list[CitationOut] = []
     action_proposal: ActionProposalOut | None = None
 
 
@@ -84,13 +83,76 @@ class ConversationDetail(ConversationSummary):
 class AgentResponse(BaseModel):
     status: str
     answer: str
-    citations: list[CitationOut] = []
     clarification_question: str | None = None
     action_proposal: ActionProposalOut | None = None
-    tool_runs: list[dict[str, Any]] = []
     trace_id: uuid.UUID
     latency_ms: int
     message_id: uuid.UUID
+
+
+class RagTraceCandidate(BaseModel):
+    rank: int
+    chunk_id: uuid.UUID
+    document_id: uuid.UUID
+    document_name: str
+    version: int
+    heading: str | None = None
+    page_number: int | None = None
+    excerpt: str
+    score: float
+    semantic_score: float
+    keyword_coverage: float
+    exact_identifier: bool
+
+
+class RagTraceCitation(BaseModel):
+    rank: int
+    chunk_id: uuid.UUID
+    document_id: uuid.UUID
+    document_name: str
+    version: int
+    heading: str | None = None
+    page_number: int | None = None
+    excerpt: str
+    score: float
+
+
+class RagTraceToolRun(BaseModel):
+    tool_name: str
+    status: str
+    duration_ms: int
+    error_message: str | None = None
+
+
+class RagTraceSummary(BaseModel):
+    trace_id: uuid.UUID
+    conversation_id: uuid.UUID
+    customer_name: str
+    organization_name: str
+    question: str
+    answer_status: str
+    decision_status: str
+    decision_reason: str | None = None
+    top_score: float | None = None
+    candidate_count: int
+    citation_count: int
+    latency_ms: int | None = None
+    legacy_partial: bool
+    created_at: datetime
+
+
+class RagTraceList(BaseModel):
+    items: list[RagTraceSummary]
+    total: int
+    offset: int
+    limit: int
+
+
+class RagTraceDetail(RagTraceSummary):
+    answer: str
+    candidates: list[RagTraceCandidate]
+    citations: list[RagTraceCitation]
+    tool_runs: list[RagTraceToolRun]
 
 
 class TicketCreate(BaseModel):

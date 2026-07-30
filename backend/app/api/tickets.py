@@ -22,6 +22,11 @@ from app.services.tickets import add_comment, claim_ticket as claim_ticket_servi
 
 router = APIRouter(tags=["tickets"])
 
+TICKET_ACTOR_OPTIONS = (
+    selectinload(Ticket.customer).selectinload(User.organization),
+    selectinload(Ticket.assignee),
+)
+
 
 def _dispatch_notification(db: Session, notification_id: uuid.UUID | None) -> None:
     if not notification_id:
@@ -38,7 +43,11 @@ def _ticket_or_404(
     statement = (
         sa.select(Ticket)
         .where(Ticket.id == ticket_id)
-        .options(selectinload(Ticket.events).selectinload(TicketEvent.author))
+        .execution_options(populate_existing=True)
+        .options(
+            *TICKET_ACTOR_OPTIONS,
+            selectinload(Ticket.events).selectinload(TicketEvent.author),
+        )
     )
     if lock:
         statement = statement.with_for_update()
@@ -109,7 +118,7 @@ def list_tickets(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    statement = sa.select(Ticket).order_by(Ticket.updated_at.desc())
+    statement = sa.select(Ticket).options(*TICKET_ACTOR_OPTIONS).order_by(Ticket.updated_at.desc())
     if user.role == "CUSTOMER":
         statement = statement.where(Ticket.organization_id == user.organization_id)
     elif organization_id:
@@ -120,7 +129,7 @@ def list_tickets(
         statement = statement.where(Ticket.category == category)
     if priority:
         statement = statement.where(Ticket.priority == priority)
-    return [ticket_dict(db, ticket) for ticket in db.scalars(statement)]
+    return [ticket_dict(db, ticket) for ticket in db.scalars(statement).unique()]
 
 
 @router.get("/tickets/{ticket_id}", response_model=TicketOut)

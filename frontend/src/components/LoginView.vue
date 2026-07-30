@@ -48,7 +48,7 @@ async function login() {
       <div class="login-copy">
         <p class="eyebrow">安全支持入口</p>
         <h1 id="login-title">登录支持中心</h1>
-        <p>获得基于官方资料的回答，或把未解决问题无缝转交人工支持。</p>
+        <p>使用企业邀请账号获取技术支持，未解决问题可以转交人工处理。</p>
       </div>
       <form @submit.prevent="login" class="login-form">
         <label>邮箱<input v-model="email" type="email" autocomplete="username" required /></label>

@@ -58,6 +58,38 @@ UNSUPPORTED_AUTHORITY_PATTERNS = [
         r"合同.{0,10}(?:是否|能否|允许)",
     )
 ]
+OUT_OF_SCOPE_PATTERNS = [
+    re.compile(pattern, re.IGNORECASE)
+    for pattern in (
+        r"天气|气温|空气质量|下雨|降雨|台风",
+        r"新闻|热搜|体育比分",
+        r"股票|股价|基金|彩票",
+        r"菜谱|怎么做菜|烹饪",
+        r"写(?:一首)?诗|讲笑话|星座|运势",
+    )
+]
+PRODUCT_SUPPORT_TERMS = (
+    "supportpilot",
+    "账号",
+    "登录",
+    "成员",
+    "权限",
+    "工作空间",
+    "工作流",
+    "节点",
+    "触发器",
+    "连接器",
+    "同步",
+    "webhook",
+    "api",
+    "接口",
+    "套餐",
+    "账单",
+    "计费",
+    "配额",
+    "错误码",
+    "工单",
+)
 INFORMATIONAL_PATTERNS = [
     re.compile(pattern, re.IGNORECASE)
     for pattern in (
@@ -254,6 +286,35 @@ def _record_tool(
     return run
 
 
+def _candidate_snapshot(results: list[SearchResult], decision) -> dict:
+    return {
+        "matches": len(results),
+        "top_score": round(results[0].score, 4) if results else None,
+        "decision": {
+            "sufficient": decision.sufficient,
+            "conflicting": decision.conflicting,
+            "reason": decision.reason,
+        },
+        "candidates": [
+            {
+                "rank": rank,
+                "chunk_id": str(result.chunk.id),
+                "document_id": str(result.chunk.document_id),
+                "document_name": result.chunk.document.logical_name,
+                "version": result.chunk.document.version,
+                "heading": result.chunk.heading,
+                "page_number": result.chunk.page_number,
+                "excerpt": result.chunk.content[:600],
+                "score": round(result.score, 6),
+                "semantic_score": round(result.semantic_score, 6),
+                "keyword_coverage": round(result.keyword_coverage, 6),
+                "exact_identifier": result.exact_identifier,
+            }
+            for rank, result in enumerate(results, start=1)
+        ],
+    }
+
+
 def _assistant(conversation: Conversation, status: str, content: str, started: float) -> Message:
     return Message(
         conversation_id=conversation.id,
@@ -270,6 +331,41 @@ def _is_explicit_handoff(content: str) -> bool:
     if any(pattern.search(content) for pattern in INFORMATIONAL_PATTERNS):
         return False
     return any(pattern.search(content) for pattern in HANDOFF_PATTERNS)
+
+
+def _is_out_of_scope(content: str) -> bool:
+    lower = content.lower()
+    if any(term in lower for term in PRODUCT_SUPPORT_TERMS):
+        return False
+    return any(pattern.search(content) for pattern in OUT_OF_SCOPE_PATTERNS)
+
+
+def _retrieval_query(
+    conversation: Conversation, current_message: Message, content: str
+) -> str:
+    history = [message for message in conversation.messages if message is not current_message]
+    previous_assistant_index = next(
+        (
+            index
+            for index in range(len(history) - 1, -1, -1)
+            if history[index].role == "ASSISTANT"
+        ),
+        None,
+    )
+    if previous_assistant_index is None:
+        return content
+    previous_assistant = history[previous_assistant_index]
+    if previous_assistant.status != "NEEDS_CLARIFICATION":
+        return content
+    previous_question = next(
+        (
+            message.content
+            for message in reversed(history[:previous_assistant_index])
+            if message.role == "USER"
+        ),
+        None,
+    )
+    return f"{previous_question} {content}" if previous_question else content
 
 
 def _needs_clarification(content: str) -> bool:
@@ -392,6 +488,17 @@ def process_customer_message(
         db.flush()
         return assistant, None, tools
 
+    if _is_out_of_scope(content):
+        assistant = _assistant(
+            conversation,
+            "UNRESOLVED",
+            "我只能协助 SupportPilot 产品相关问题，例如账号权限、API 集成、工作流配置和计费。这个问题不在技术支持范围内。",
+            started,
+        )
+        db.add(assistant)
+        db.flush()
+        return assistant, None, tools
+
     if _needs_clarification(content) and conversation.clarification_count < 1:
         conversation.clarification_count += 1
         assistant = _assistant(
@@ -401,8 +508,7 @@ def process_customer_message(
         db.flush()
         return assistant, None, tools
 
-    query_messages = [message.content for message in conversation.messages if message.role == "USER"][-2:]
-    query = " ".join(query_messages)
+    query = _retrieval_query(conversation, user_message, content)
     search_started = time.perf_counter()
     try:
         results = search_chunks(db, query)
@@ -413,11 +519,7 @@ def process_customer_message(
                 conversation.id,
                 "search_knowledge",
                 {"query": query},
-                {
-                    "matches": len(results),
-                    "top_score": round(results[0].score, 4) if results else 0,
-                    "decision": decision.reason,
-                },
+                _candidate_snapshot(results, decision),
                 search_started,
             )
         )

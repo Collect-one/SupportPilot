@@ -29,11 +29,22 @@ if errorlevel 1 (
     exit /b 1
 )
 
+set "FRONTEND_PORT="
+for /f "tokens=2 delims=:" %%P in ('docker compose port frontend 80 2^>nul') do set "FRONTEND_PORT=%%P"
+if not defined FRONTEND_PORT (
+    echo.
+    echo [ERROR] Could not determine the published frontend port.
+    docker compose ps
+    pause
+    exit /b 1
+)
+set "FRONTEND_URL=http://localhost:%FRONTEND_PORT%"
+
 set /a ATTEMPTS=0
 
 :WAIT_FOR_APP
 set /a ATTEMPTS+=1
-powershell -NoLogo -NoProfile -Command "try { $api = Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:8000/ready' -TimeoutSec 3; $web = Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:8081' -TimeoutSec 3; if ($api.StatusCode -eq 200 -and $web.StatusCode -eq 200) { exit 0 } } catch {}; exit 1" >nul 2>&1
+powershell -NoLogo -NoProfile -Command "try { $api = Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:8000/ready' -TimeoutSec 3; $web = Invoke-WebRequest -UseBasicParsing -Uri '%FRONTEND_URL%' -TimeoutSec 3; if ($api.StatusCode -eq 200 -and $web.StatusCode -eq 200) { exit 0 } } catch {}; exit 1" >nul 2>&1
 if not errorlevel 1 goto APP_READY
 
 if %ATTEMPTS% GEQ 45 goto START_TIMEOUT
@@ -43,7 +54,7 @@ goto WAIT_FOR_APP
 :APP_READY
 echo.
 echo SupportPilot is ready. Opening the browser...
-start "" "http://localhost:8081"
+start "" "%FRONTEND_URL%"
 ping -n 3 127.0.0.1 >nul
 exit /b 0
 

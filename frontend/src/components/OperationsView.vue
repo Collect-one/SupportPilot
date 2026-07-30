@@ -32,7 +32,7 @@ async function resend(item: Notification) {
     resendingTickets.value = pending
   }
 }
-function toolLabel(value: string) { return { search_knowledge: '检索知识库', propose_ticket: '生成工单建议', get_ticket_status: '查询工单状态' }[value] || value }
+function toolLabel(value: string) { return { search_knowledge: '检索知识库', generate_grounded_answer: '生成知识库回答', propose_ticket: '生成工单建议', get_ticket_status: '查询工单状态' }[value] || value }
 function formatDate(value: string) { return new Intl.DateTimeFormat('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(value)) }
 onMounted(load)
 </script>

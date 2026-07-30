@@ -7,18 +7,6 @@ export interface User {
   organization_name: string | null
 }
 
-export interface Citation {
-  id: string
-  chunk_id: string
-  document_id: string
-  document_name: string
-  version: number
-  heading: string | null
-  page_number: number | null
-  excerpt: string
-  score: number
-}
-
 export interface ActionProposal {
   id: string
   action_type: string
@@ -36,7 +24,6 @@ export interface Message {
   trace_id: string
   latency_ms: number | null
   created_at: string
-  citations: Citation[]
   action_proposal: ActionProposal | null
 }
 
@@ -111,4 +98,62 @@ export interface DocumentRecord {
     page_number: number | null
     content: string
   }>
+}
+
+export interface RagTraceCandidate {
+  rank: number
+  chunk_id: string
+  document_id: string
+  document_name: string
+  version: number
+  heading: string | null
+  page_number: number | null
+  excerpt: string
+  score: number
+  semantic_score: number
+  keyword_coverage: number
+  exact_identifier: boolean
+}
+
+export interface RagTraceCitation {
+  rank: number
+  chunk_id: string
+  document_id: string
+  document_name: string
+  version: number
+  heading: string | null
+  page_number: number | null
+  excerpt: string
+  score: number
+}
+
+export interface RagTraceSummary {
+  trace_id: string
+  conversation_id: string
+  customer_name: string
+  organization_name: string
+  question: string
+  answer_status: string
+  decision_status: string
+  decision_reason: string | null
+  top_score: number | null
+  candidate_count: number
+  citation_count: number
+  latency_ms: number | null
+  legacy_partial: boolean
+  created_at: string
+}
+
+export interface RagTraceDetail extends RagTraceSummary {
+  answer: string
+  candidates: RagTraceCandidate[]
+  citations: RagTraceCitation[]
+  tool_runs: Array<{ tool_name: string; status: string; duration_ms: number; error_message: string | null }>
+}
+
+export interface RagTraceList {
+  items: RagTraceSummary[]
+  total: number
+  offset: number
+  limit: number
 }

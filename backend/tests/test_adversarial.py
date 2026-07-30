@@ -5,11 +5,14 @@ from datetime import timedelta
 import httpx
 import pytest
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
+from app.api.tickets import TICKET_ACTOR_OPTIONS
 from app.config import get_settings
 from app.database import SessionLocal, engine
 from app.models import Document, Notification, Organization, Ticket, ToolRun, User, utcnow
 from app.schemas import TicketCreate
+from app.seed import seed_demo
 from app.services.notifications import enqueue_ticket_notification, send_ticket_notification
 from app.services.tickets import create_ticket as create_ticket_service
 from app.services.text import get_embedding
@@ -52,6 +55,71 @@ def test_invalid_assignee_rolls_back_status_change(client, customer_headers, sup
     current = client.get(f"/api/v1/tickets/{ticket['id']}", headers=support_headers).json()
     assert current["status"] == "OPEN"
     assert not any(event["event_type"] == "STATUS_CHANGED" for event in current["events"])
+
+
+def test_ticket_list_query_count_is_constant(client, support_headers):
+    with SessionLocal() as db:
+        for index in range(20):
+            organization = Organization(name=f"查询测试企业 {index}", slug=f"query-org-{index}")
+            customer = User(
+                organization=organization,
+                email=f"query-customer-{index}@example.test",
+                display_name=f"客户 {index}",
+                password_hash="not-used",
+                role="CUSTOMER",
+            )
+            assignee = User(
+                email=f"query-support-{index}@example.test",
+                display_name=f"支持 {index}",
+                password_hash="not-used",
+                role="SUPPORT",
+            )
+            db.add_all([organization, customer, assignee])
+            db.flush()
+            db.add(
+                Ticket(
+                    number=f"KT-209901-{index:04d}",
+                    organization_id=organization.id,
+                    customer_id=customer.id,
+                    assignee_id=assignee.id,
+                    title=f"查询计数工单 {index}",
+                    description="验证列表查询不会逐条加载关联用户",
+                    product_module="工作流",
+                    category="INCIDENT",
+                    priority="NORMAL",
+                    idempotency_key=f"query-count-{index}",
+                )
+            )
+        db.commit()
+
+    selects = []
+
+    def count_selects(conn, cursor, statement, parameters, context, executemany):
+        if statement.lstrip().upper().startswith("SELECT"):
+            selects.append(statement)
+
+    sa.event.listen(engine, "before_cursor_execute", count_selects)
+    try:
+        response = client.get("/api/v1/tickets", headers=support_headers)
+    finally:
+        sa.event.remove(engine, "before_cursor_execute", count_selects)
+
+    assert response.status_code == 200, response.text
+    assert len(response.json()) >= 20
+    assert len(selects) <= 5
+
+
+def test_ticket_lock_query_does_not_join_nullable_relationships():
+    statement = (
+        sa.select(Ticket)
+        .options(*TICKET_ACTOR_OPTIONS)
+        .where(Ticket.id == sa.bindparam("ticket_id"))
+        .with_for_update()
+    )
+
+    sql = str(statement.compile(dialect=postgresql.dialect())).upper()
+    assert " FOR UPDATE" in sql
+    assert " JOIN " not in sql
 
 
 def test_disabled_organization_invalidates_existing_token(client, customer_headers):
@@ -139,6 +207,24 @@ def test_embedding_dimension_mismatch_is_rejected(monkeypatch):
         assert "维度不匹配" in str(exc)
     else:
         raise AssertionError("dimension mismatch was not rejected")
+
+
+def test_demo_seed_is_idempotent_when_source_hash_changes(client):
+    with SessionLocal() as db:
+        document = db.scalar(sa.select(Document).order_by(Document.logical_name))
+        logical_name = document.logical_name
+        version = document.version
+        document.sha256 = "0" * 64
+        db.commit()
+
+    with SessionLocal() as db:
+        seed_demo(db)
+        duplicates = db.scalar(
+            sa.select(sa.func.count())
+            .select_from(Document)
+            .where(Document.logical_name == logical_name, Document.version == version)
+        )
+        assert duplicates == 1
 
 
 def test_worker_recovers_expired_processing_lease(client, monkeypatch):

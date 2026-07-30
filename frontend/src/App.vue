@@ -7,6 +7,7 @@ import CustomerTickets from './components/CustomerTickets.vue'
 import KnowledgeView from './components/KnowledgeView.vue'
 import LoginView from './components/LoginView.vue'
 import OperationsView from './components/OperationsView.vue'
+import RagAuditView from './components/RagAuditView.vue'
 import SupportTickets from './components/SupportTickets.vue'
 import { clearSession, getStoredUser, SESSION_EVENT, SESSION_SYNC_KEY } from './api'
 import type { User } from './types'
@@ -21,6 +22,7 @@ const titles: Record<string, string> = {
   'support-tickets': '工单队列',
   knowledge: '知识库',
   operations: '运行记录',
+  'rag-audit': 'RAG 验收',
 }
 const title = computed(() => titles[view.value] || 'SupportPilot')
 
@@ -66,5 +68,6 @@ onBeforeUnmount(() => {
     <SupportTickets v-else-if="view === 'support-tickets'" />
     <KnowledgeView v-else-if="view === 'knowledge'" />
     <OperationsView v-else-if="view === 'operations'" />
+    <RagAuditView v-else-if="view === 'rag-audit'" />
   </AppShell>
 </template>
