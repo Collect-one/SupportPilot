@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal EnableExtensions EnableDelayedExpansion
 title SupportPilot - Start
 
 cd /d "%~dp0"
@@ -29,26 +29,28 @@ if errorlevel 1 (
     exit /b 1
 )
 
+echo Waiting for API and frontend services...
 set "FRONTEND_PORT="
-for /f "tokens=2 delims=:" %%P in ('docker compose port frontend 80 2^>nul') do set "FRONTEND_PORT=%%P"
-if not defined FRONTEND_PORT (
-    echo.
-    echo [ERROR] Could not determine the published frontend port.
-    docker compose ps
-    pause
-    exit /b 1
-)
-set "FRONTEND_URL=http://localhost:%FRONTEND_PORT%"
-
+set "FRONTEND_URL="
 set /a ATTEMPTS=0
 
 :WAIT_FOR_APP
 set /a ATTEMPTS+=1
-powershell -NoLogo -NoProfile -Command "try { $api = Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:8000/ready' -TimeoutSec 3; $web = Invoke-WebRequest -UseBasicParsing -Uri '%FRONTEND_URL%' -TimeoutSec 3; if ($api.StatusCode -eq 200 -and $web.StatusCode -eq 200) { exit 0 } } catch {}; exit 1" >nul 2>&1
-if not errorlevel 1 goto APP_READY
 
-if %ATTEMPTS% GEQ 45 goto START_TIMEOUT
-ping -n 3 127.0.0.1 >nul
+if not defined FRONTEND_PORT (
+    for /f "tokens=2 delims=:" %%P in ('docker compose port frontend 80 2^>nul') do (
+        set "FRONTEND_PORT=%%P"
+        set "FRONTEND_URL=http://localhost:%%P"
+    )
+)
+
+if defined FRONTEND_URL (
+    powershell -NoLogo -NoProfile -Command "try { $api = Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:8000/ready' -TimeoutSec 3; $web = Invoke-WebRequest -UseBasicParsing -Uri '!FRONTEND_URL!' -TimeoutSec 3; if ($api.StatusCode -eq 200 -and $web.StatusCode -eq 200) { exit 0 } } catch {}; exit 1" >nul 2>&1
+    if not errorlevel 1 goto APP_READY
+)
+
+if %ATTEMPTS% GEQ 60 goto START_TIMEOUT
+timeout /t 2 /nobreak >nul
 goto WAIT_FOR_APP
 
 :APP_READY
@@ -60,9 +62,13 @@ exit /b 0
 
 :START_TIMEOUT
 echo.
-echo [ERROR] SupportPilot was not ready after 90 seconds. Current status:
-docker compose ps
+echo [ERROR] SupportPilot was not ready after 120 seconds. Current status:
+docker compose ps --all
 echo.
-echo View logs with: docker compose logs --tail 100 api worker
+echo Recent service logs:
+docker compose logs --tail 80 db api worker frontend
+echo.
+echo Run this command to inspect the full logs:
+echo docker compose logs -f db api worker frontend
 pause
 exit /b 1

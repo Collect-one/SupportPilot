@@ -16,3 +16,6 @@ backend/test_uploads_pg/
 backend/uploads/
 *.log
 .DS_Store
+
+# Local resume and handoff artifacts
+交付/
